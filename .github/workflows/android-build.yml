@@ -1,0 +1,62 @@
+name: Build Signed APK
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "21"
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew 2>/dev/null || true
+
+      - name: Create .env for API Keys
+        run: |
+          touch .env
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
+          echo "MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}" >> .env
+          if [ -z "${{ secrets.GEMINI_API_KEY }}" ]; then echo 'GEMINI_API_KEY="mock_key"' >> .env; fi
+          if [ -z "${{ secrets.MAPS_API_KEY }}" ]; then echo 'MAPS_API_KEY="mock_key"' >> .env; fi
+
+      - name: Prepare Signing Keys and Config
+        run: |
+          if [ -f "my-upload-key.jks.b64" ]; then base64 -d my-upload-key.jks.b64 > my-upload-key.jks 2>/dev/null || true; fi
+          if [ -f "key.jks.b64" ]; then base64 -d key.jks.b64 > key.jks 2>/dev/null || true; fi
+          cp key.jks my-upload-key.jks 2>/dev/null || true
+          mkdir -p app && cp key.jks app/my-upload-key.jks 2>/dev/null || true
+          cat << 'PROP' > key.properties
+          storePassword=eQDOT4DtFs5sQ0o0xcuA
+          keyPassword=eQDOT4DtFs5sQ0o0xcuA
+          keyAlias=key0
+          storeFile=../my-upload-key.jks
+          PROP
+          cp key.properties app/key.properties 2>/dev/null || true
+
+      - name: Build Signed APK
+        run: |
+          ./gradlew clean assembleRelease --no-daemon --no-configuration-cache \
+            -Pandroid.injected.signing.store.file=$(pwd)/my-upload-key.jks \
+            -Pandroid.injected.signing.store.password=eQDOT4DtFs5sQ0o0xcuA \
+            -Pandroid.injected.signing.key.alias=key0 \
+            -Pandroid.injected.signing.key.password=eQDOT4DtFs5sQ0o0xcuA \
+            -PstorePassword=eQDOT4DtFs5sQ0o0xcuA \
+            -PkeyPassword=eQDOT4DtFs5sQ0o0xcuA \
+            -PkeyAlias=key0
+
+      - name: Upload Release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: '**/build/outputs/apk/release/*.apk'

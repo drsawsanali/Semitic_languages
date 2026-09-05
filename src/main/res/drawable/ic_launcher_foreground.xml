@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Stele / Arch Tablet Background Silhouette -->
+    <path
+        android:fillColor="#E6B5651D"
+        android:pathData="M34,42 C34,31 43,23 54,23 C65,23 74,31 74,42 L74,80 L34,80 Z" />
+    <!-- Inner Tablet Border -->
+    <path
+        android:fillColor="#FFFAF4"
+        android:pathData="M37,43 C37,33 44,26 54,26 C64,26 71,33 71,43 L71,77 L37,77 Z" />
+    <!-- Golden Core Tablet -->
+    <path
+        android:fillColor="#3A1D14"
+        android:pathData="M40,44 C40,36 46,30 54,30 C62,30 68,36 68,44 L68,74 L40,74 Z" />
+    <!-- Inscription Lines & Glyphs in Gold -->
+    <path
+        android:fillColor="#D9873F"
+        android:pathData="M46,40 L62,40 L62,42 L46,42 Z" />
+    <path
+        android:fillColor="#D9873F"
+        android:pathData="M44,46 L64,46 L64,48 L44,48 Z" />
+    <path
+        android:fillColor="#D9873F"
+        android:pathData="M44,52 L64,52 L64,54 L44,54 Z" />
+    <path
+        android:fillColor="#D9873F"
+        android:pathData="M44,58 L64,58 L64,60 L44,60 Z" />
+    <path
+        android:fillColor="#D9873F"
+        android:pathData="M46,64 L62,64 L62,66 L46,66 Z" />
+    <!-- Golden Star / Sun Emblem at Top of Stele -->
+    <path
+        android:fillColor="#F0C98A"
+        android:pathData="M54,33 L55.5,36 L58.5,36 L56,38 L57,41 L54,39.5 L51,41 L52,38 L49.5,36 L52.5,36 Z" />
+</vector>

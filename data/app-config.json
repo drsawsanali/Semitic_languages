@@ -1,0 +1,39 @@
+{
+  "appId": "semitic-atlas",
+  "appName": {
+    "ar": "أطلس اللغات السامية",
+    "en": "Semitic Languages Digital Atlas"
+  },
+  "tagline": {
+    "ar": "الموسوعة الرقمية الأكاديمية الشاملة للغات السامية ونقوشها وحضاراتها وفهارسها",
+    "en": "Comprehensive Academic Digital Encyclopedia & Atlas of Semitic Languages"
+  },
+  "version": "1.0.0",
+  "authorship": {
+    "preparedBy": {
+      "ar": "سوسن علي الحضوري",
+      "en": "Sousan Ali Al-Hadouri"
+    },
+    "supervisedBy": {
+      "ar": "أ.د/ أحمد فقعس",
+      "en": "Prof. Dr. Ahmed Faqas"
+    },
+    "institution": {
+      "ar": "جامعة صنعاء — كلية الآداب والعلوم الإنسانية — قسم الآثار واللغات السامية",
+      "en": "Sana'a University — Faculty of Arts and Humanities — Department of Archaeology & Semitics"
+    },
+    "level": {
+      "ar": "مستوى ثالث: قديم",
+      "en": "Third Level: Ancient"
+    },
+    "academicYear": "2025/2026"
+  },
+  "defaultLanguage": "ar",
+  "supportedLanguages": [
+    "ar",
+    "en"
+  ],
+  "theme": "dark-gold",
+  "offlineFirst": true,
+  "storagePrefix": "semitic_atlas_"
+}

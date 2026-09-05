@@ -1,0 +1,9 @@
+{
+  "provider": "local-mock",
+  "endpoint": "",
+  "model": "semitic-philologist-v1",
+  "apiKey": "",
+  "customPrompt": "You are an expert academic philologist specializing in comparative Semitic linguistics, epigraphy, and historical phonology. Cite primary inscriptions and standard academic references.",
+  "enabled": false,
+  "offlineFallbackEnabled": true
+}

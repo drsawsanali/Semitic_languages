@@ -37,26 +37,31 @@ jobs:
           cp key.jks my-upload-key.jks 2>/dev/null || true
           mkdir -p app && cp key.jks app/my-upload-key.jks 2>/dev/null || true
           
-          # إدخال كلمة المرور الصحيحة في ملف الخصائص
-          cat << 'PROP' > key.properties
+          # قراءة الاسم المستعار (Alias) الحقيقي من الملف تلقائياً
+          REAL_ALIAS=$(keytool -list -v -keystore my-upload-key.jks -storepass 1fEdIH8oX1cXWN9rOKc2 | grep -i "Alias name:" | cut -d':' -f2 | xargs | head -n 1)
+          echo "Discovered actual Alias: $REAL_ALIAS"
+          
+          cat << PROP > key.properties
           storePassword=1fEdIH8oX1cXWN9rOKc2
           keyPassword=1fEdIH8oX1cXWN9rOKc2
-          keyAlias=key0
+          keyAlias=$REAL_ALIAS
           storeFile=../my-upload-key.jks
           PROP
           cp key.properties app/key.properties 2>/dev/null || true
+          
+          # حفظ الاسم المستعار للخطوة التالية
+          echo "REAL_ALIAS=$REAL_ALIAS" >> $GITHUB_ENV
 
       - name: Build Signed APK
         run: |
-          # استخدام كلمة المرور الصحيحة أثناء البناء والتوقيع
           ./gradlew clean assembleRelease --no-daemon --no-configuration-cache \
             -Pandroid.injected.signing.store.file=$(pwd)/my-upload-key.jks \
             -Pandroid.injected.signing.store.password=1fEdIH8oX1cXWN9rOKc2 \
-            -Pandroid.injected.signing.key.alias=key0 \
+            -Pandroid.injected.signing.key.alias="${{ env.REAL_ALIAS }}" \
             -Pandroid.injected.signing.key.password=1fEdIH8oX1cXWN9rOKc2 \
             -PstorePassword=1fEdIH8oX1cXWN9rOKc2 \
             -PkeyPassword=1fEdIH8oX1cXWN9rOKc2 \
-            -PkeyAlias=key0
+            -PkeyAlias="${{ env.REAL_ALIAS }}"
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v4

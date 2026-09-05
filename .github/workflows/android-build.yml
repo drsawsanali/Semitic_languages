@@ -30,30 +30,21 @@ jobs:
           if [ -z "${{ secrets.GEMINI_API_KEY }}" ]; then echo 'GEMINI_API_KEY="mock_key"' >> .env; fi
           if [ -z "${{ secrets.MAPS_API_KEY }}" ]; then echo 'MAPS_API_KEY="mock_key"' >> .env; fi
 
-      - name: Prepare Signing Keys and Config
+      - name: Generate Fresh Keystore
         run: |
-          if [ -f "my-upload-key.jks.b64" ]; then base64 -d my-upload-key.jks.b64 > my-upload-key.jks 2>/dev/null || true; fi
-          if [ -f "key.jks.b64" ]; then base64 -d key.jks.b64 > key.jks 2>/dev/null || true; fi
-          cp key.jks my-upload-key.jks 2>/dev/null || true
-          mkdir -p app && cp key.jks app/my-upload-key.jks 2>/dev/null || true
-          cat << 'PROP' > key.properties
-          storePassword=eQDOT4DtFs5sQ0o0xcuA
-          keyPassword=eQDOT4DtFs5sQ0o0xcuA
-          keyAlias=key0
-          storeFile=../my-upload-key.jks
-          PROP
-          cp key.properties app/key.properties 2>/dev/null || true
+          rm -f *.jks app/*.jks key.properties app/key.properties
+          keytool -genkeypair -v -keystore release-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias my-alias -storepass "release123" -keypass "release123" -dname "CN=SemiticApp,O=Semitic,C=US"
 
       - name: Build Signed APK
         run: |
           ./gradlew clean assembleRelease --no-daemon --no-configuration-cache \
-            -Pandroid.injected.signing.store.file=$(pwd)/my-upload-key.jks \
-            -Pandroid.injected.signing.store.password=eQDOT4DtFs5sQ0o0xcuA \
-            -Pandroid.injected.signing.key.alias=key0 \
-            -Pandroid.injected.signing.key.password=eQDOT4DtFs5sQ0o0xcuA \
-            -PstorePassword=eQDOT4DtFs5sQ0o0xcuA \
-            -PkeyPassword=eQDOT4DtFs5sQ0o0xcuA \
-            -PkeyAlias=key0
+            -Pandroid.injected.signing.store.file=$(pwd)/release-key.jks \
+            -Pandroid.injected.signing.store.password=release123 \
+            -Pandroid.injected.signing.key.alias=my-alias \
+            -Pandroid.injected.signing.key.password=release123 \
+            -PstorePassword=release123 \
+            -PkeyPassword=release123 \
+            -PkeyAlias=my-alias
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
